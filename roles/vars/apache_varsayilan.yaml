@@ -1,0 +1,16 @@
+---
+apache_sunucusu: apache2
+php_kutuphane: libapache2-mod-php
+db_sunucusu: mariadb-server
+ftp_sunucusu: vsftpd
+
+projeklasor: /home/erkan/Prod_Proje/
+hedefklasor: /var/www/html
+
+yerelconf: /home/erkan/AnsibleOtomasyon/confbelgeler/dir.conf
+hedefconf: /etc/apache2/mods-enabled/dir.conf
+
+webservis: apache2
+
+yerelsudoer: /home/erkan/AnsibleRolDosya/roles/files/sudoer_beylerbeyi
+hedefsudoer: /etc/sudoers.d/beylerbeyi

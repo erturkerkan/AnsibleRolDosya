@@ -1,0 +1,40 @@
+  
+      - name: Isletim sistemlerini tespit et.
+        debug: var=ansible_os_family
+        tags: web_sunuculari
+
+      - name: Dosyalardan degiskenleri oku
+        include_vars: "{{ lookup('first_found', params) }}"
+        vars:
+          params:
+            files:
+              - "roles/vars/apache_{{ ansible_os_family }}.yaml"
+              - "roles/vars/apache_varsayilan.yaml"
+        tags: web_sunuculari    
+
+      - name: Bu gorev,Ubuntu apache2 ve php kutuphanesi yuklemesini gerceklestirir ve paket indexisini günceller.
+        ansible.builtin.package:
+          name: 
+            - "{{ apache_sunucusu }}"
+            - "{{ php_kutuphane }}"
+          state: latest
+        tags: web_sunuculari
+
+      - name: Bu gorev, Web sunuculuarına, Config belgelerini kopyalama işlemini gerçekleştirir.
+        copy:
+          src: "{{ yerelconf }}"
+          dest: "{{ hedefconf }}"
+          owner: root
+          group: root
+          mode: 0644
+        notify: conf.changed
+        tags: web_sunuculari
+      
+      - name: Bu görev, web sunucularina varsayilan web sayfasini kopyalama işlemi için oluşturulmuştur.
+        copy:
+          src: "{{ projeklasor }}"
+          dest: "{{ hedefklasor }}"
+          owner: root
+          group: root
+          mode: 0644
+        tags: web_sunuculari

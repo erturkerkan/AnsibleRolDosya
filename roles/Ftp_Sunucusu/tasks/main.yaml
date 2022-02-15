@@ -1,0 +1,9 @@
+      - name: Bu görev, dosyadan değişkenleri okur.
+        include_vars:
+          file: /home/erkan/AnsibleOtomasyon/AnsibleRolDosya/roles/vars/apache_varsayilan.yaml
+      
+      - name: Bu gorev,Ubuntu ftp  yuklemesini gerceklestirir.
+        ansible.builtin.package:  
+          name: 
+            - "{{ ftp_sunucusu }}"
+          state: latest

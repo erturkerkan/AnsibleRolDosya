@@ -1,0 +1,83 @@
+---
+  - hosts: all,!Ansible_Controller
+    tags: always
+  # tags: never
+    become: true
+    tasks:
+
+
+# Bu görev sunucu güncellemeleri için hazırlanmıştır.
+    - name: Bu gorev,Ubuntu apache2 ve  yuklemesini gerceklestirir ve paket indexisini günceller.
+      ansible.builtin.package:
+          upgrade: dist
+          update_cache: yes
+      when: ansible_distribution == "Ubuntu" 
+
+
+    - name: Isletim sistemlerini tespit et.
+      debug: var=ansible_os_family
+      tags: user
+
+    - name: Dosyalardan degiskenleri oku
+      include_vars: "{{ lookup('first_found', params) }}"
+      vars:
+        params:
+          files:
+            - "vars/apache_{{ ansible_os_family }}.yaml"
+            - "vars/apache_varsayilan.yaml"
+      tags: user
+
+# Bu görev yetkili kullanıcı oluşturma görevini gerçekleştirir.
+
+    - name: Bu görev yetkili kullanıcı oluşturma görevini gerçekleştirir.
+      #tags: always
+      tags: user
+      user:
+        name: beylerbeyi
+        groups: root
+
+    - name: Bu görev Ansible kulalnıcısı içim ssh anahtar atama görevini gerçekleştirir.
+      #tags: always
+      tags: user
+      authorized_key:
+        user: beylerbeyi
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDg4uAiGpphiTVS8KCV3UoL3Clb7N/XC0N/v9LR63u4E+ocecSeg68+xQLWnNaRZsNF/Nk8WbZNFey+gUtlZfbuJz67VivrB6PXZv65mTgdKr3TJi8O/1aWbRLjsRZS+BfZarZYCn6dQ6cAkBfRCnc3oDtxEesRhfpb2DflMwXgcswkRUpvKcY+L07Pk8yz8mjexef3OAiX76TnnUknbcQn0ugZMT9CNP9BNvpV171TlORcokyUJs/tua8uK6l5CgroRHxdzH/TAP9NfNG4IyNFzc5A2j8jbVnDi31r6KvXAXLYwmoCyh2QNbBcfop4gmdhNg0T9vjL7NEuwj5TCySvNOO/DNR87w7p6N4TIP+E6iNBqrwRmVBLpQJz/ODFCG91HVlo23TqeAwG7C0ShVv6Dv3FhMZLN+B42fZ7FWsbUelUKZgbEBs93a2CxVY6kyamfybNHGWaKmZ7KUJFXoz7NvH3EcLZFDmRsejesg8++DYkzajLprW2OramsL4Zdb8= erkan@ansible-controller"
+
+    - name: Bu görev sudoers kopyalama işlemini gerçekleştirir.
+      copy:
+        src: "{{ yerelsudoer }}"
+        dest: "{{ hedefsudoer }}"
+        owner: root
+        group: root
+        mode: 0440
+      tags: user
+
+# Bu rol Ansible Controller için kullanılmkatadır.
+  - hosts: Ansible_Controller
+    connection: local
+    become: true
+    roles:
+      - Ansible_Controller   
+
+
+# Bu rol web sunucuları için kullanılmkatadır.
+  - hosts: web_sunuculari
+    become: true
+    roles:
+      - Web_Sunuculari 
+    tags: websunuculari
+
+# Bu rol veritabani sunucuları için kullanılmkatadır.
+  - hosts: veritabani_sunucusu
+    become: true
+    roles:
+      - Veritabani_Sunucusu
+    tags: veritabani
+
+
+# Bu rol ftp sunucuları için kullanılmkatadır.
+  - hosts: ftp_sunucusu
+    become: true
+    roles:
+      - Ftp_Sunucusu
+    tags: ftp

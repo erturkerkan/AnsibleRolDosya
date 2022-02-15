@@ -1,0 +1,8 @@
+      - name: Bu görev, dosyadan değişkenleri okur.
+        include_vars:
+          file: /home/erkan/AnsibleOtomasyon/AnsibleRolDosya/roles/vars/gitrepo.yaml
+      
+      - name: Bu görev Git Repodan kaynak kodlarini indirme işlemini yapar.
+        git:
+          repo: "{{ repoadres }}"
+          dest: "{{ repoklasor }}"

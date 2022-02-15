@@ -1,0 +1,45 @@
+---
+  - hosts: all,!Ansible_Controller
+    tags: always
+  # tags: never
+    become: true
+    tasks:
+
+
+# Bu görev sunucu güncellemeleri için hazırlanmıştır.
+    - name: Bu gorev,Ubuntu apache2 ve  yuklemesini gerceklestirir ve paket indexisini günceller.
+      ansible.builtin.package:
+          upgrade: dist
+          update_cache: yes
+      when: ansible_distribution == "Ubuntu" 
+
+   
+# Bu rol Ansible Controller için kullanılmkatadır.
+  - hosts: Ansible_Controller
+    connection: local
+    become: true
+    roles:
+      - Ansible_Controller   
+
+
+# Bu rol web sunucuları için kullanılmkatadır.
+  - hosts: web_sunuculari
+    become: true
+    roles:
+      - Web_Sunuculari 
+    tags: websunuculari
+
+# Bu rol veritabani sunucuları için kullanılmkatadır.
+  - hosts: veritabani_sunucusu
+    become: true
+    roles:
+      - Veritabani_Sunucusu
+    tags: veritabani
+
+
+# Bu rol ftp sunucuları için kullanılmkatadır.
+  - hosts: ftp_sunucusu
+    become: true
+    roles:
+      - Ftp_Sunucusu
+    tags: ftp

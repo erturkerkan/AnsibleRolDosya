@@ -1,0 +1,4 @@
+- name: conf.changed
+  service:
+    name: "{{ webservis }}"
+    state: restarted
