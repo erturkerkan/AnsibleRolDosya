@@ -1,5 +1,5 @@
 ---
-  - hosts: all,!Ansible_Controller
+  - hosts: all
     tags: always
   # tags: never
     become: true
@@ -16,7 +16,7 @@
 
     - name: Isletim sistemlerini tespit et.
       debug: var=ansible_os_family
-      tags: user
+      tags: always
 
     - name: Dosyalardan degiskenleri oku
       include_vars: "{{ lookup('first_found', params) }}"
@@ -24,21 +24,21 @@
         params:
           files:
             - "vars/apache_{{ ansible_os_family }}.yaml"
-            - "vars/apache_varsayilan.yaml"
-      tags: user
+            - "/home/erkan/AnsibleRolDosya/roles/vars/apache_varsayilan.yaml"
+      tags: always
 
 # Bu görev yetkili kullanıcı oluşturma görevini gerçekleştirir.
 
     - name: Bu görev yetkili kullanıcı oluşturma görevini gerçekleştirir.
       #tags: always
-      tags: user
+      tags: always
       user:
         name: beylerbeyi
         groups: root
 
     - name: Bu görev Ansible kulalnıcısı içim ssh anahtar atama görevini gerçekleştirir.
       #tags: always
-      tags: user
+      tags: always
       authorized_key:
         user: beylerbeyi
         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDg4uAiGpphiTVS8KCV3UoL3Clb7N/XC0N/v9LR63u4E+ocecSeg68+xQLWnNaRZsNF/Nk8WbZNFey+gUtlZfbuJz67VivrB6PXZv65mTgdKr3TJi8O/1aWbRLjsRZS+BfZarZYCn6dQ6cAkBfRCnc3oDtxEesRhfpb2DflMwXgcswkRUpvKcY+L07Pk8yz8mjexef3OAiX76TnnUknbcQn0ugZMT9CNP9BNvpV171TlORcokyUJs/tua8uK6l5CgroRHxdzH/TAP9NfNG4IyNFzc5A2j8jbVnDi31r6KvXAXLYwmoCyh2QNbBcfop4gmdhNg0T9vjL7NEuwj5TCySvNOO/DNR87w7p6N4TIP+E6iNBqrwRmVBLpQJz/ODFCG91HVlo23TqeAwG7C0ShVv6Dv3FhMZLN+B42fZ7FWsbUelUKZgbEBs93a2CxVY6kyamfybNHGWaKmZ7KUJFXoz7NvH3EcLZFDmRsejesg8++DYkzajLprW2OramsL4Zdb8= erkan@ansible-controller"
@@ -50,7 +50,7 @@
         owner: root
         group: root
         mode: 0440
-      tags: user
+      tags: always
 
 # Bu rol Ansible Controller için kullanılmkatadır.
   - hosts: Ansible_Controller
